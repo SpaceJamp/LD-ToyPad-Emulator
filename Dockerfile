@@ -1,12 +1,12 @@
-FROM --platform=linux/amd64 node:22-alpine AS base-amd64
-FROM --platform=linux/arm64 node:22-alpine AS base-arm64
-FROM --platform=linux/arm/v7 node:20-alpine AS base-armv7
-FROM --platform=linux/arm/v6 node:18-alpine AS base-armv6
-FROM node:alpine AS base-default
+FROM --platform=linux/amd64 node:22-alpine AS baseamd64
+FROM --platform=linux/arm64 node:22-alpine AS basearm64
+FROM --platform=linux/arm/v7 node:20-alpine AS basearmv7
+FROM --platform=linux/arm/v6 node:18-alpine AS basearmv6
+FROM node:alpine AS base
 
-ARG TARGETARCH
-ARG TARGETVARIANT
-FROM base-${TARGETARCH}${TARGETVARIANT:-default} AS final
+ARG TARGETARCH=""
+ARG TARGETVARIANT=""
+FROM base${TARGETARCH}${TARGETVARIANT} AS final
 
 ENV CXXFLAGS="-std=c++17"
 # Install native build tools
