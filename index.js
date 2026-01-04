@@ -20,10 +20,7 @@ const io = new Server(server);
 //File where tag info will be saved
 const toytagsPath = path.join(__dirname, "server/json/toytags.json");
 const tokenmapPath = path.join(__dirname, "server/json/tokenmap.json");
-const charactersMapPath = path.join(
-  __dirname,
-  "server/json/charactermap.json"
-);
+const charactersMapPath = path.join(__dirname, "server/json/charactermap.json");
 const tp = new ld.ToyPadEmu();
 tp.registerDefaults();
 
@@ -195,7 +192,7 @@ function initializeToyTagsJSON() {
   });
   fs.writeFileSync(toytagsPath, JSON.stringify(dataset, null, 4));
   console.log("Initialized toytags.JSON");
-  io.emit("refreshTokens");
+  //io.emit("refreshTokens");
 }
 
 function RGBToHex(r, g, b) {
@@ -652,7 +649,7 @@ io.on("connection", (socket) => {
       console.log("Token 404.");
       return;
     }
-	  
+
     dataset.splice(index, 1);
     fs.writeFile(toytagsPath, JSON.stringify(dataset, null, 4), (err) => {
       if (err) {
@@ -671,6 +668,7 @@ io.on("connection", (socket) => {
     }
   });
 
+  // TODO IS IT NECESSARY TO EMIT REFRESH TOKENS ON initializeToyTagsJson?
   socket.on("syncToyPad", (pad) => {
     console.log("<<Syncing tags, one moment...>>");
     initializeToyTagsJSON();
@@ -686,6 +684,7 @@ io.on("connection", (socket) => {
   });
 });
 
-
 const EXPRESS_PORT = 80;
-server.listen(EXPRESS_PORT, () => console.log(`Server running on port ${EXPRESS_PORT}`));
+server.listen(EXPRESS_PORT, () =>
+  console.log(`Server running on port ${EXPRESS_PORT}`)
+);

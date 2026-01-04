@@ -159,6 +159,7 @@ $(function () {
     applyFilters();
   });
   //**IO Functions**
+  // TODO: refreshToken is emitted twice in syncToyPad (index.js)
   socket.on("refreshTokens", function () {
     console.log("IO Recieved: Refresh Tokens");
     setTimeout(function () {
@@ -263,6 +264,7 @@ $(function () {
   }
 
   //Remove all token items from the lists and reread toytags.json and repopulate the lists.
+  // TODO: this is called twice and it seems like the clearing of the box happens at around the same time and then both instances receive the json and add them back in
   function refreshToyBox() {
     //Remove All Current Tokens
     var boxes = document.querySelectorAll(".box");
