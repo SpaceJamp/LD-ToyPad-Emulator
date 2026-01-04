@@ -668,7 +668,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  // TODO IS IT NECESSARY TO EMIT REFRESH TOKENS ON initializeToyTagsJson?
   socket.on("syncToyPad", (pad) => {
     console.log("<<Syncing tags, one moment...>>");
     initializeToyTagsJSON();

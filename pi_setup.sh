@@ -4,7 +4,7 @@ echo "dwc2" | sudo tee -a /etc/modules
 echo "libcomposite" | sudo tee -a /etc/modules
 echo "usb_f_rndis" | sudo tee -a /etc/modules
 
-git clone https://github.com/aurarius1/LD-ToyPad-Emulator.git
+git clone https://github.com/Berny23/LD-ToyPad-Emulator.git
 cd LD-ToyPad-Emulator
 
 printf '\necho "$UDC" > UDC\nsleep 2;\nchmod a+rw /dev/hidg0' >> usb_setup_script.sh
