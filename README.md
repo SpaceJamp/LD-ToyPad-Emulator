@@ -138,7 +138,7 @@ Allows you to connect an emulated Toy Pad to your PC or video-game console.
 3. Use SSH to run the following command (Don't know the IP address? Try [this IP scanner](https://www.advanced-ip-scanner.com/).) - this will prepare your Raspberry Pi to work as a USB gadget:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/aurarius1/LD-ToyPad-Emulator/master/pi_setup.sh | bash
+curl -sSL https://raw.githubusercontent.com/Berny23/LD-ToyPad-Emulator/master/pi_setup.sh | bash
 ```
 
 4. Reboot you device with this command:
@@ -181,7 +181,7 @@ podman create \
 
 ## Update
 
-To update this software, just get the latest changes by running while inside the `LD-ToyPad-Emulator` folder:
+To update this software, just get the latest changes by running the following commands while inside the `LD-ToyPad-Emulator` folder:
 
 ```bash
 git pull
