@@ -67,10 +67,10 @@ $(function () {
 
     stop: function (event, ui) {
       var parentBox = ui.item.closest(".box");
-      var previousPadNum = ui.item.attr("previous-pad-num");
-      var newPadNum = parentBox.attr("pad-num");
-      var previousPadIndex = ui.item.attr("previousPadIndex");
-      var newPadIndex = parentBox.attr("pad-index");
+      var previousPadNum = parseInt(ui.item.attr("previous-pad-num"));
+      var newPadNum = parseInt(parentBox.attr("pad-num"));
+      var previousPadIndex = parseInt(ui.item.attr("previousPadIndex"));
+      var newPadIndex = parseInt(parentBox.attr("pad-index"));
 
       // If moving to the same space on the Toy Pad, remove and place in the current space
       if (
@@ -81,7 +81,7 @@ $(function () {
       ) {
         updateToyPadPosition(
           ui.item.attr("data-uid"),
-          ui.item.attr("data-id"),
+          parseInt(ui.item.attr("data-id")),
           newPadNum,
           newPadIndex,
           newPadIndex
@@ -124,12 +124,12 @@ $(function () {
         });
       }
       //If moving from the Toy Box, place tag in the game.
-      else if (ui.sender.attr("pad-num") == -1) {
+      else if (parseInt(ui.sender.attr("pad-num")) === -1) {
         var content = {
           uid: ui.item.attr("data-uid"),
-          id: ui.item.attr("data-id"),
-          position: $this.attr("pad-num"),
-          index: $this.attr("pad-index"),
+          id: parseInt(ui.item.attr("data-id")),
+          position: parseInt($this.attr("pad-num")),
+          index: parseInt($this.attr("pad-index")),
         };
         console.log(content);
         $.ajax({
@@ -143,10 +143,10 @@ $(function () {
       else {
         updateToyPadPosition(
           ui.item.attr("data-uid"),
-          ui.item.attr("data-id"),
-          $this.attr("pad-num"),
-          ui.sender.attr("pad-index"),
-          $this.attr("pad-index")
+          parseInt(ui.item.attr("data-id")),
+          parseInt($this.attr("pad-num")),
+          parseInt(ui.sender.attr("pad-index")),
+          parseInt($this.attr("pad-index"))
         );
       }
     },
@@ -350,7 +350,7 @@ $(function () {
       method: "DELETE",
       contentType: "application/json",
       url: "/remove",
-      data: JSON.stringify({ index: parseInt(currentIndex), uid: uid }),
+      data: JSON.stringify({ index: currentIndex, uid: uid }),
     }).done(function () {
       setTimeout(function () {
         $.ajax({
