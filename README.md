@@ -129,76 +129,68 @@ Allows you to connect an emulated Toy Pad to your PC or video-game console.
 - 2 GB+ Micro SD card
 - Internet connection on your PC and single board computer
 
-#### Raspberry Pi Zero W Guide
+#### Installation
 
-1. If you're using a Raspberry Pi Zero W, flash Raspberry Pi OS (Legacy, 32-bit, Bullseye) Lite to your SD card using [the Raspberry Pi Imager tool](https://www.raspberrypi.org/software/) and follow [this](https://www.raspberrypi.org/documentation/configuration/wireless/headless.md) as well as [this](https://www.raspberrypi.org/documentation/remote-access/ssh/README.md) instruction for headless installation.
+1. Flash a recent edition of Raspberry Pi OS Lite (either 32-bit for the Zero (W) or 64-bit for RPi 4/5)
 
 2. Connect your device to your PC via USB cable (don't use the port on the edge of the Pi Zero!).
 
-3. Use SSH to run the following commands (Don't know the IP address? Try [this IP scanner](https://www.advanced-ip-scanner.com/).):
+3. Use SSH to run the following command (Don't know the IP address? Try [this IP scanner](https://www.advanced-ip-scanner.com/).) - this will prepare your Raspberry Pi to work as a USB gadget:
 
-   ```bash
-   sudo apt update
-   sudo apt install -y git libusb-1.0-0-dev libudev-dev
-   [[ -f /boot/firmware/config.txt ]] && ( echo "dtoverlay=dwc2" | sudo tee -a /boot/firmware/config.txt ) || ( echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt )
-   echo "dwc2" | sudo tee -a /etc/modules
-   echo "libcomposite" | sudo tee -a /etc/modules
-   echo "usb_f_rndis" | sudo tee -a /etc/modules
-
-   git config pull.rebase false
-   git clone --no-checkout https://github.com/Berny23/LD-ToyPad-Emulator.git
-   cd LD-ToyPad-Emulator/
-   git checkout 9f60e2538f43225f7b917bd300be6284d1db51cb
-
-   printf '\necho "$UDC" > UDC\nsleep 2;\nchmod a+rw /dev/hidg0' >> usb_setup_script.sh
-
-   sudo cp usb_setup_script.sh /usr/local/bin/toypad_usb_setup.sh
-   sudo chmod +x /usr/local/bin/toypad_usb_setup.sh
-   (sudo crontab -l 2>/dev/null; echo "@reboot sudo /usr/local/bin/toypad_usb_setup.sh") | sudo crontab -
-   ```
+```bash
+curl -sSL https://raw.githubusercontent.com/aurarius1/LD-ToyPad-Emulator/master/pi_setup.sh | bash
+```
 
 4. Reboot you device with this command:
+
    ```bash
    sudo shutdown -r now
    ```
-5. Connect via SSH again and run the following commands:
 
-   ```bash
-   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-   export NVM_DIR="$HOME/.nvm"
-   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-   [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+5. Reconnect to SSH, change the directory to LD-Toypad-Emulator and build the container using this command:
 
-   nvm install 11
-   sudo setcap cap_net_bind_service=+ep `readlink -f \`which node\``
-   npm install --global node-gyp@8.4.1
-   npm config set node_gyp $(npm prefix -g)/lib/node_modules/node-gyp/bin/node-gyp.js
+```bash
+podman build \
+  -t ld-toypad-emulator:latest \
+  .
+```
 
-   cd LD-ToyPad-Emulator
-   npm install
-   ```
+6. Once the container is successfully build run start the container:
+
+```bash
+podman create \
+  --name ld-toypad-emulator \
+  -p 8080:80 \
+  --device /dev/hidg0:/dev/hidg0 \
+  # Optional: mount a host folder for persistent images
+  # -v /path/to/images:/app/server/images:Z  \
+  localhost/ld-toypad-emulator:latest
+```
 
 #### Usage
 
-1. Run the emulator server with this command if you are in the correct folder (otherwise run `cd LD-ToyPad-Emulator` first):
+1. Start the emulator container:
 
    ```bash
-   npm run start
+   podman start ld-toypad-emulator
    ```
 
 2. Type **your single board computer's IP address** in a browser to use the emulator.
 
-   If you want to turn it off, just press `Ctrl + C` in the terminal window, then use the command `sudo shutdown now` to safely power off the device.
+   If you want to turn it off, just stop the container (`podman stop ld-tyopad-emulator`) in the terminal window, then use the command `sudo shutdown now` to safely power off the device.
 
 ## Update
 
-To update this software, just get the latest changes by running the following commands while inside the `LD-ToyPad-Emulator` folder:
+To update this software, just get the latest changes by running while inside the `LD-ToyPad-Emulator` folder:
 
 ```bash
-git fetch
-git checkout origin/HEAD && git checkout origin/HEAD package-lock.json
-npm install
+git pull
+podman stop ld-toypad-emulator # only if the container is currently running
+podman rm ld-toypad-emulator
+podman image rm localhost/ld-toypad-emulator:latest
 ```
+
+Then rebuild and recreate the container starting from step 5 above.
 
 ## Adding Images
 

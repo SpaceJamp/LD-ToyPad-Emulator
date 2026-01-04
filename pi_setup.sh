@@ -1,4 +1,4 @@
-sudo apt install -y git libusb-1.0-0-dev libudev-dev
+sudo apt install -y git libusb-1.0-0-dev libudev-dev podman
 [[ -f /boot/firmware/config.txt ]] && ( echo "dtoverlay=dwc2" | sudo tee -a /boot/firmware/config.txt ) || ( echo "dtoverlay=dwc2" | sudo tee -a /boot/config.txt )
 echo "dwc2" | sudo tee -a /etc/modules
 echo "libcomposite" | sudo tee -a /etc/modules
