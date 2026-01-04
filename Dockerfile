@@ -1,17 +1,25 @@
-FROM node:22-bullseye-slim
+FROM --platform=linux/amd64 node:22-alpine AS base-amd64
+FROM --platform=linux/arm64 node:22-alpine AS base-arm64
+FROM --platform=linux/arm/v7 node:20-alpine AS base-armv7
+FROM --platform=linux/arm/v6 node:18-alpine AS base-armv6
+FROM node:alpine AS base-default
 
-# THEORETICALLY WITH THIS YOU COULD ADD BEHVIOUR THAT DEPENDS ON THE PLATFORM
-ARG TARGETPLATFORM
-
+ARG TARGETARCH
+ARG TARGETVARIANT
+FROM base-${TARGETARCH}${TARGETVARIANT:-default} AS final
 
 ENV CXXFLAGS="-std=c++17"
 # Install native build tools
-RUN apt-get update && apt-get install -y \
+RUN apk update && apk add --no-cache \
+    build-base \
     python3 \
+    libusb-dev \
+    linux-headers \
+    eudev-dev \
     g++ \
     make \
-    libusb-1.0-0-dev \
-    libudev-dev 
+    py3-pip \
+    py3-setuptools
 
 WORKDIR /app
 
