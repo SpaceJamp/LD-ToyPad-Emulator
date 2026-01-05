@@ -45,6 +45,6 @@ jobs:
           context: .
           file: ./Dockerfile # Path to the Dockerfile          
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ghcr.io/${{ env.IMAGE_NAME_LC }}:latest
           labels: ${{ steps.meta.outputs.labels }}
           # platforms: linux/amd64, linux/arm64
