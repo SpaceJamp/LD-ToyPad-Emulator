@@ -274,7 +274,7 @@ After that, run the command `hostname -I` in your virtual machine (or on your si
 
 ### Podman doesn't build image
 
-If you encounter any errors regarding image creation using podman, please try and install docker ([Docker Docs](https://docs.docker.com/engine/install/#installation-procedures-for-supported-platforms)) and then replace `podman` with `sudo docker`. Try starting again from step 5. Note that docker most probably does not need the `--platform` flag when building (docker sets the necessary arguments automatically).
+If you encounter any errors regarding image creation using podman, please try and install docker ([Docker Docs](https://docs.docker.com/engine/install/#installation-procedures-for-supported-platforms)) and then replace `podman` with `sudo docker`. Try starting again from step 5. Note that docker most probably does not need the `--platform` flag when building (docker should set the necessary arguments automatically).
 
 ## Acknowledgements
 
