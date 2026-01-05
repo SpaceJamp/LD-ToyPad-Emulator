@@ -3,7 +3,7 @@ name: Build and Publish Docker Image to GHCR
 on:
   push:
     branches:
-      - master # Trigger on pushes to the main branch
+      - master
   workflow_dispatch: # Allows manual triggering from the GitHub UI
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # New step to handle uppercase names
+      # Step to handle uppercase names
       - name: Prepare image name
         run: |
           echo "IMAGE_NAME_LC=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
