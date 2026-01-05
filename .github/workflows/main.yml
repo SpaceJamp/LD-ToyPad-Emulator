@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     # runs-on: ubuntu-latest # node 11 fails with Python 2 exception for print
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
