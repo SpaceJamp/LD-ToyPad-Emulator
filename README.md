@@ -152,8 +152,15 @@ curl -sSL https://raw.githubusercontent.com/Berny23/LD-ToyPad-Emulator/master/pi
 ```bash
 podman build \
   -t ld-toypad-emulator:latest \
+  --platform=linux/your-platform \
   .
 ```
+
+NOTE: Raspberry Pi OS 64bit uses linux/arm64/v8 as platform, Raspberry Pi OS 32bit uses linux/arm/v7 as platform, the Raspberry Pi Zero uses linux/arm/v6 as platform, and x86_64 based machines will use linux/amd64 as platform.
+
+If you have any issues using podman, you can try and use docker instead, see [Podman build issue](#podman-doesnt-build-image).
+
+Especially on the RPi Zero the build can take a very long time (20+ minutes). If pulling the base images succeeds and the build proceeds to higher stages (i.e. RUN npm install) you probably just need to be patient!
 
 6. Once the container is successfully build run start the container:
 
@@ -164,7 +171,7 @@ podman create \
   --device /dev/hidg0:/dev/hidg0 \
   # Optional: mount a host folder for persistent images
   # -v /path/to/images:/app/server/images:Z  \
-  localhost/ld-toypad-emulator:latest
+  ld-toypad-emulator:latest
 ```
 
 #### Usage
@@ -264,6 +271,10 @@ Then try using the device again.
 If you're using a virtual machine, make sure you've applied the solution specific to your software first ([VirtualBox](#webpage-not-reachable-oracle-virtualbox) or [VMware](#webpage-not-reachable-vmware))!
 
 After that, run the command `hostname -I` in your virtual machine (or on your single board computer) and type the IP address that looks like `192.168.X.X` in your webbrowser.
+
+### Podman doesn't build image
+
+If you encounter any errors regarding image creation using podman, please try and install docker ([Docker Docs](https://docs.docker.com/engine/install/#installation-procedures-for-supported-platforms)) and then replace `podman` with `sudo docker`. Try starting again from step 5. Note that docker most probably does not need the `--platform` flag when building (docker should set the necessary arguments automatically).
 
 ## Acknowledgements
 
