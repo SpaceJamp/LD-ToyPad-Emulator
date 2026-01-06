@@ -1,0 +1,53 @@
+name: Build and Publish Docker Image to GHCR
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch: # Allows manual triggering from the GitHub UI
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read # Allows checkout of the repo
+      packages: write # Allows pushing to the container registry
+    concurrency: # disable concurrent runs to avoid version inconsistency
+      group: ld-toypad-emulator
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step to handle uppercase names
+      - name: Prepare image name
+        run: |
+          echo "IMAGE_NAME_LC=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # Use the lowercase environment variable here
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LC }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile # Path to the Dockerfile          
+          push: true
+          tags: ghcr.io/${{ env.IMAGE_NAME_LC }}:latest
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/arm64, linux/armv7, linux/armv6
