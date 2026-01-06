@@ -12,6 +12,9 @@ jobs:
     permissions:
       contents: read # Allows checkout of the repo
       packages: write # Allows pushing to the container registry
+    concurrency: # disable concurrent runs to avoid version inconsistency
+      group: ld-toypad-emulator
+      cancel-in-progress: false
 
     steps:
       - name: Checkout repository
